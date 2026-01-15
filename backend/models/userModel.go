@@ -4,6 +4,6 @@ import "gorm.io/gorm"
 
 type User struct {
 	gorm.Model
-	Name  string
-	Admin bool
+	Name  string `gorm:"unique"`
+	Admin bool   `gorm:"default:false"`
 }
