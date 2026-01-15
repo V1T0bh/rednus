@@ -9,4 +9,7 @@ func SetupRoutes() {
 	router.GET("/posts/:id", controllers.PostsIndex)
 	router.PUT("/posts/:id", controllers.PostsUpdate)
 	router.DELETE("/posts/:id", controllers.PostsDelete)
+
+	router.POST("/signup", controllers.SignUp)
+	router.POST("/login", controllers.Login)
 }
