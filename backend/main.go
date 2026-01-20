@@ -1,15 +1,15 @@
 package main
 
 import (
-	"github.com/V1T0bh/rednus/backend/initalizers"
+	"github.com/V1T0bh/rednus/backend/initializers"
 	"github.com/gin-gonic/gin"
 )
 
 var router *gin.Engine = gin.Default()
 
 func init() {
-	initalizers.LoadEnv()
-	initalizers.ConnectToDB()
+	initializers.LoadEnv()
+	initializers.ConnectToDB()
 }
 
 func main() {

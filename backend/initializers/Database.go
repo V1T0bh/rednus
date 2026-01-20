@@ -1,4 +1,4 @@
-package initalizers
+package initializers
 
 import (
 	"log"
@@ -14,6 +14,7 @@ func ConnectToDB() {
 	var err error
 	// postgresql: //postgres:[YOUR-PASSWORD]@db.gtkesmpfmlaucvddzcnq.supabase.co:5432/postgres
 	// DATABASE_URL="postgresql://postgres.gtkesmpfmlaucvddzcnq:[YOUR-PASSWORD]@aws-1-ap-south-1.pooler.supabase.com:6543/postgres"
+	// postgresql://postgres:[YOUR-PASSWORD]@db.gtkesmpfmlaucvddzcnq.supabase.co:5432/postgres
 	dsn := os.Getenv("DB_URL")
 	DB, err = gorm.Open(postgres.Open(dsn), &gorm.Config{
 		PrepareStmt: false,

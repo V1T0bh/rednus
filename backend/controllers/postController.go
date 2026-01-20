@@ -3,7 +3,7 @@ package controllers
 import (
 	"log"
 
-	"github.com/V1T0bh/rednus/backend/initalizers"
+	"github.com/V1T0bh/rednus/backend/initializers"
 	"github.com/V1T0bh/rednus/backend/models"
 	"github.com/gin-gonic/gin"
 )

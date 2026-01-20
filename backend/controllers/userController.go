@@ -6,7 +6,7 @@ import (
 	"os"
 	"time"
 
-	"github.com/V1T0bh/rednus/backend/initalizers"
+	"github.com/V1T0bh/rednus/backend/initializers"
 	"github.com/V1T0bh/rednus/backend/models"
 	"github.com/gin-gonic/gin"
 	"github.com/golang-jwt/jwt/v5"
