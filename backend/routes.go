@@ -7,6 +7,7 @@ func SetupRoutes() {
 	router.POST("/posts", controllers.PostsCreate)
 	router.POST("topics/:topic_id/posts/", controllers.PostsCreateinTopic)
 	router.GET("/posts", controllers.PostsAll)
+	router.GET("/topics/:topic_id/posts", controllers.PostsAllinTopic)
 	router.GET("/posts/:id", controllers.PostsIndex)
 	router.PUT("/posts/:id", controllers.PostsUpdate)
 	router.DELETE("/posts/:id", controllers.PostsDelete)

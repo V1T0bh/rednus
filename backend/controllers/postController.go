@@ -94,6 +94,20 @@ func PostsAll(c *gin.Context) {
 	})
 }
 
+func PostsAllinTopic(c *gin.Context) {
+	// Get the topic ID from params
+	topicID := c.Param("topic_id")
+
+	// Get the posts
+	var posts []models.Post
+	initializers.DB.Where("topic_id = ?", topicID).Find(&posts)
+
+	// Respond with 200 OK and all posts
+	c.JSON(200, gin.H{
+		"post": posts,
+	})
+}
+
 func PostsIndex(c *gin.Context) {
 	id := c.Param("id")
 
