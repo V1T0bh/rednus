@@ -16,11 +16,23 @@ func SignIn(c *gin.Context) {
 
 	// create user if doesnt exist
 	user := models.User{Name: username}
-	initializers.DB.FirstOrCreate(&user, user)
+	result := initializers.DB.FirstOrCreate(&user, user)
+
+	if result.Error != nil {
+		c.Status(400)
+		return
+	}
+
+	message := ""
+	if result.RowsAffected == 0 {
+		message = "User-Exists"
+	} else {
+		message = "User-Created"
+	}
 
 	// respond with username
 	c.JSON(200, gin.H{
-		"message": "User-Created",
+		"message": message,
 		"user":    user,
 	})
 }
