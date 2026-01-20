@@ -25,7 +25,7 @@ func SignUp(c *gin.Context) {
 	var user models.User
 	user = models.User{Name: username}
 
-	result := initalizers.DB.FirstOrCreate(&user, user)
+	result := initializers.DB.FirstOrCreate(&user, user)
 
 	if result.Error != nil {
 		c.Status(400)
@@ -57,7 +57,7 @@ func Login(c *gin.Context) {
 	username := body.User
 	// look up user
 	var user models.User
-	result := initalizers.DB.First(&user, "name = ?", username)
+	result := initializers.DB.First(&user, "name = ?", username)
 
 	// return error if doesnt exist
 	if result.RowsAffected == 0 {
