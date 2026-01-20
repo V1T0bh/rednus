@@ -1,7 +1,8 @@
 package controllers
 
 import (
-	"log"
+	"errors"
+	"net/http"
 
 	"github.com/V1T0bh/rednus/backend/initializers"
 	"github.com/V1T0bh/rednus/backend/models"
@@ -21,11 +22,14 @@ func PostsCreate(c *gin.Context) {
 	// CHANGE USERID AND TOPICID when implemented
 	post := models.Post{Title: body.Title, Description: body.Description, UserID: 1, TopicID: 1}
 
-	result := initalizers.DB.Create(&post)
+	result := initializers.DB.Create(&post)
 
 	if result.Error != nil {
-		c.Status(400)
-		log.Fatal("Error creating post")
+		c.JSON(http.StatusInternalServerError, map[string]any{
+			"success": false,
+			"message": result.Error.Error(),
+		})
+		c.Error(errors.New("Error creating post"))
 		return
 	}
 
@@ -39,7 +43,7 @@ func PostsCreate(c *gin.Context) {
 func PostsAll(c *gin.Context) {
 	// Get the posts
 	var posts []models.Post
-	initalizers.DB.Find(&posts)
+	initializers.DB.Find(&posts)
 
 	// Respond with 200 OK and all posts
 	c.JSON(200, gin.H{
@@ -51,7 +55,7 @@ func PostsIndex(c *gin.Context) {
 	id := c.Param("id")
 
 	var post models.Post
-	initalizers.DB.First(&post, id)
+	initializers.DB.First(&post, id)
 
 	c.JSON(200, gin.H{
 		"post": post,
@@ -70,9 +74,9 @@ func PostsUpdate(c *gin.Context) {
 	c.Bind(&body)
 
 	var post models.Post
-	initalizers.DB.First(&post, id)
+	initializers.DB.First(&post, id)
 
-	initalizers.DB.Model(&post).Updates(models.Post{
+	initializers.DB.Model(&post).Updates(models.Post{
 		Title:       body.Title,
 		Description: body.Description,
 	})
@@ -85,7 +89,7 @@ func PostsUpdate(c *gin.Context) {
 func PostsDelete(c *gin.Context) {
 	id := c.Param("id")
 
-	initalizers.DB.Delete(&models.Post{}, id)
+	initializers.DB.Delete(&models.Post{}, id)
 
 	c.Status(200)
 }
