@@ -91,5 +91,7 @@ func PostsDelete(c *gin.Context) {
 
 	initializers.DB.Delete(&models.Post{}, id)
 
-	c.Status(200)
+	c.JSON(200, gin.H{
+		"message": "Post-Deleted",
+	})
 }
