@@ -17,6 +17,6 @@ func SetupRoutes() {
 	router.PUT("/topics/:id", controllers.TopicsUpdate)
 	router.DELETE("/topics/:id", controllers.TopicsDelete)
 
-	router.POST("/signup", controllers.SignUp)
-	router.POST("/login", controllers.Login)
+	router.POST("/signin", controllers.SignIn)
+	router.GET("/users", controllers.GetUsers)
 }
