@@ -5,6 +5,7 @@ import "github.com/V1T0bh/rednus/backend/controllers"
 func SetupRoutes() {
 	// Define your routes here
 	router.POST("/posts", controllers.PostsCreate)
+	router.POST("topics/:topic_id/posts/", controllers.PostsCreateinTopic)
 	router.GET("/posts", controllers.PostsAll)
 	router.GET("/posts/:id", controllers.PostsIndex)
 	router.PUT("/posts/:id", controllers.PostsUpdate)
