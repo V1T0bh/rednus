@@ -1,6 +1,8 @@
 package controllers
 
 import (
+	"strings"
+
 	"github.com/V1T0bh/rednus/backend/initializers"
 	"github.com/V1T0bh/rednus/backend/models"
 	"github.com/gin-gonic/gin"
@@ -13,6 +15,7 @@ func SignIn(c *gin.Context) {
 	}
 	c.Bind(&body)
 	username := body.User
+	username = strings.ToLower(username)
 
 	// create user if doesnt exist
 	user := models.User{Name: username}
@@ -23,7 +26,7 @@ func SignIn(c *gin.Context) {
 		return
 	}
 
-	message := ""
+	var message string
 	if result.RowsAffected == 0 {
 		message = "User-Exists"
 	} else {
