@@ -35,13 +35,13 @@ export default async function TopicPage({ params }: { params: { topic_id: string
           {
             posts.map((post) => (
               <Link key={post.id} href={`/topic/${topic_id}/${post.id}`}>
-                <Card className="cursor-pointer hover:bg-gray-200 w-full h-30 sm:h-40">
+                <Card className="cursor-pointer hover:bg-gray-200 w-full h-35 md:h-45">
                   <CardHeader>
                     <CardTitle>{post.title}</CardTitle>
                     <CardAction>{post.datePosted}</CardAction>
                   </CardHeader>
                   <CardContent>
-                    <p>{post.description}</p>
+                    <p className="line-clamp-2 md:line-clamp-3">{post.description}</p>
                   </CardContent>
                 </Card>
               </Link>
