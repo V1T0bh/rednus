@@ -10,7 +10,7 @@ const Topics = [
 
 export const AuthedHome = () => {
     return (
-    <div className="flex flex-col min-h-[calc(100vh-200px)] items-center justify-center bg-zinc-50">
+    <div className="flex flex-col fill-screen items-center justify-center bg-zinc-50">
       <Title>
         Welcome, {User}!
       </Title>
@@ -20,7 +20,7 @@ export const AuthedHome = () => {
       </h2>
       {Topics.map((topic) => (
         <Link href={topic.link} key={topic.id}>
-            <button className="cursor-pointer w-110 text-black border-solid border-4 border-orange-400 hover:border-orange-700 hover:bg-orange-200 focus:ring-4 focus:outline-none focus:ring-red-300 font-medium rounded-lg text-2xl py-5 mb-4 text-center leading-5">
+            <button className="cursor-pointer w-110 text-black border-solid border-4 border-orange-400 hover:bg-orange-200 focus:ring-4 focus:outline-none focus:ring-red-300 font-medium rounded-lg text-2xl py-5 mb-4 text-center leading-5">
                 {topic.label}
             </button>
         </Link>

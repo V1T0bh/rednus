@@ -122,3 +122,9 @@
   }
 }
 
+@layer utilities {
+  .fill-screen {
+    min-height: calc(100vh - 200px);
+  }
+}
+

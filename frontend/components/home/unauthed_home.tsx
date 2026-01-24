@@ -3,7 +3,7 @@ import { Title } from "../title";
 
 export const UnauthedHome = () => {
     return (
-    <div className="flex flex-col min-h-[calc(100vh-200px)] items-center justify-center pt-10">
+    <div className="flex flex-col fill-screen items-center justify-center pt-10">
       <Title>
         Welcome to <em className="hover:bg-red-400">REDnus</em>!
       </Title>
