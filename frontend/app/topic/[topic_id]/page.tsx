@@ -25,7 +25,7 @@ export default async function TopicPage({ params }: { params: { topic_id: string
   posts.sort((a, b) => (a.datePosted < b.datePosted ? 1 : -1));
 
   return (
-    <div className="flex flex-col justify-center mt-10 px-10">
+    <div className="flex flex-col justify-center mt-10 px-50">
         <Title>{`Topic ${topic_id}`}</Title>
 
         <hr className="h-px my-8 bg-gray-800 border-0"></hr>
