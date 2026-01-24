@@ -22,11 +22,11 @@ export const Navbar = () => {
                 </NavigationMenuItem>
 
                 <div className="flex flex-1 justify-center gap-6">
-                  <NavigationMenuItem className="relative">
-                      <NavigationMenuTrigger>Topics</NavigationMenuTrigger>
-                      <NavigationMenuContent className="absolute left-0 top-full mt-2">
-                          <NavigationMenuLink href="/topic/1">Topic 1</NavigationMenuLink>
-                      </NavigationMenuContent>
+
+                  <NavigationMenuItem>
+                      <NavigationMenuLink asChild className={navigationMenuTriggerStyle()}>
+                          <Link href="/topic">Topics</Link>
+                      </NavigationMenuLink>
                   </NavigationMenuItem>
 
                   <NavigationMenuItem>
