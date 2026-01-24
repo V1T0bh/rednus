@@ -10,7 +10,7 @@ const Topics = [
 
 export const AuthedHome = () => {
     return (
-    <div className="flex flex-col min-h-screen items-center justify-center bg-zinc-50">
+    <div className="flex flex-col min-h-[calc(100vh-200px)] items-center justify-center bg-zinc-50">
       <Title>
         Welcome, {User}!
       </Title>
