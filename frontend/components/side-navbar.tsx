@@ -23,7 +23,7 @@ export function SideNavbar() {
 
   return (
     <aside
-      className={`bg-white border-r border-gray-200 transition-all duration-300 ease-in-out overflow-hidden ${
+      className={`bg-[#171717] border-r border-[#2a2a2a] transition-all duration-300 ease-in-out overflow-hidden ${
         isOpen ? "w-64" : "w-16"
       }`}
     >
@@ -31,11 +31,11 @@ export function SideNavbar() {
       <div className="p-4">
         <button
           onClick={() => setIsOpen(!isOpen)}
-          className="w-10 h-10 rounded-full bg-white shadow-md border border-gray-200 flex items-center justify-center hover:bg-gray-50 transition-colors"
+          className="w-10 h-10 rounded-full bg-[#262626] border border-[#3a3a3a] flex items-center justify-center hover:bg-[#333333] transition-colors"
           aria-label={isOpen ? "Close menu" : "Open menu"}
         >
           <svg
-            className={`w-5 h-5 text-gray-600 transition-transform duration-300 ${isOpen ? "rotate-180" : ""}`}
+            className={`w-5 h-5 text-gray-400 transition-transform duration-300 ${isOpen ? "rotate-180" : ""}`}
             fill="none"
             stroke="currentColor"
             viewBox="0 0 24 24"
@@ -53,7 +53,7 @@ export function SideNavbar() {
         <div className="space-y-2">
           <Link
             href="/"
-            className="flex items-center gap-3 px-4 py-3 rounded-lg text-gray-700 hover:bg-gray-100 transition-colors"
+            className="flex items-center gap-3 px-4 py-3 rounded-lg text-gray-300 hover:bg-[#262626] hover:text-white transition-colors"
             title="Home"
           >
             <svg className="w-5 h-5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -64,7 +64,7 @@ export function SideNavbar() {
 
           <Link
             href="/topic"
-            className="flex items-center gap-3 px-4 py-3 rounded-lg text-gray-700 hover:bg-gray-100 transition-colors"
+            className="flex items-center gap-3 px-4 py-3 rounded-lg text-gray-300 hover:bg-[#262626] hover:text-white transition-colors"
             title="Topics"
           >
             <svg className="w-5 h-5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -75,7 +75,7 @@ export function SideNavbar() {
 
           <Link
             href="/profile"
-            className="flex items-center gap-3 px-4 py-3 rounded-lg text-gray-700 hover:bg-gray-100 transition-colors"
+            className="flex items-center gap-3 px-4 py-3 rounded-lg text-gray-300 hover:bg-[#262626] hover:text-white transition-colors"
             title="Profile"
           >
             <svg className="w-5 h-5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -86,12 +86,12 @@ export function SideNavbar() {
         </div>
 
         {/* Divider */}
-        {isOpen && <div className="my-6 border-t border-gray-200" />}
+        {isOpen && <div className="my-6 border-t border-[#2a2a2a]" />}
 
         {/* Recommended Topics */}
         {isOpen && (
           <div>
-            <h3 className="px-4 text-sm font-semibold text-gray-500 uppercase tracking-wider mb-3">
+            <h3 className="px-4 text-xs font-semibold text-gray-500 uppercase tracking-wider mb-3">
               Recommended Topics
             </h3>
             <div className="space-y-1">
@@ -100,14 +100,14 @@ export function SideNavbar() {
                   <Link
                     key={topic.id}
                     href={`/topic/${topic.id}`}
-                    className="flex items-center gap-3 px-4 py-2 rounded-lg text-gray-600 hover:bg-gray-100 transition-colors"
+                    className="flex items-center gap-3 px-4 py-2 rounded-lg text-gray-400 hover:bg-[#262626] hover:text-gray-200 transition-colors"
                   >
-                    <span className="w-2 h-2 rounded-full bg-blue-500 flex-shrink-0" />
+                    <span className="w-2 h-2 rounded-full bg-red-500 flex-shrink-0" />
                     <span className="text-sm truncate">{topic.name}</span>
                   </Link>
                 ))
               ) : (
-                <p className="px-4 text-sm text-gray-400">Loading...</p>
+                <p className="px-4 text-sm text-gray-500">Loading...</p>
               )}
             </div>
           </div>
