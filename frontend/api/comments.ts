@@ -54,7 +54,24 @@ export async function createComment(postId: string, data: CreateCommentRequest):
   };
 }
 
-// Note: updateComment is not supported by the backend API
+export async function updateComment(commentId: string, data: UpdateCommentRequest): Promise<Comment> {
+  const response = await apiRequest<{ comment?: any }>(`/comments/${commentId}`, {
+    method: 'PUT',
+    body: JSON.stringify({ Content: data.content }),
+  });
+
+  const c = (response as any).comment;
+  
+  return {
+    id: c.ID?.toString() ?? '0',
+    postId: c.PostID?.toString() ?? '0',
+    userId: c.UserID?.toString() ?? '0',
+    content: c.Content ?? '',
+    authorName: c.AuthorName ?? '',
+    createdAt: c.CreatedAt ?? '',
+    updatedAt: c.UpdatedAt ?? '',
+  };
+}
 
 export async function deleteComment(commentId: string): Promise<void> {
   await apiRequest<void>(`/comments/${commentId}`, {

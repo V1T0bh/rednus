@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { getCommentsByPost, createComment, type Comment } from '@/api/comments';
+import { getCommentsByPost, createComment, updateComment, deleteComment, type Comment } from '@/api/comments';
 import { useAuth } from '@/lib/auth';
 import Link from 'next/link';
 import { formatDate } from '@/lib/date-utils';
@@ -15,6 +15,8 @@ export function CommentsSection({ postId }: CommentsSectionProps) {
   const [newComment, setNewComment] = useState('');
   const [isLoading, setIsLoading] = useState(true);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [editingCommentId, setEditingCommentId] = useState<string | null>(null);
+  const [editContent, setEditContent] = useState('');
   const { isAuthenticated, username, isLoading: authLoading } = useAuth();
 
   useEffect(() => {
@@ -46,6 +48,42 @@ export function CommentsSection({ postId }: CommentsSectionProps) {
       alert('Failed to create comment');
     } finally {
       setIsSubmitting(false);
+    }
+  };
+
+  const handleEditClick = (comment: Comment) => {
+    setEditingCommentId(comment.id);
+    setEditContent(comment.content);
+  };
+
+  const handleCancelEdit = () => {
+    setEditingCommentId(null);
+    setEditContent('');
+  };
+
+  const handleSaveEdit = async (commentId: string) => {
+    if (!editContent.trim()) return;
+
+    try {
+      const updatedComment = await updateComment(commentId, { content: editContent });
+      setComments(comments.map(c => c.id === commentId ? updatedComment : c));
+      setEditingCommentId(null);
+      setEditContent('');
+    } catch (error) {
+      console.error('Error updating comment:', error);
+      alert('Failed to update comment');
+    }
+  };
+
+  const handleDelete = async (commentId: string) => {
+    if (!confirm('Are you sure you want to delete this comment?')) return;
+
+    try {
+      await deleteComment(commentId);
+      setComments(comments.filter(c => c.id !== commentId));
+    } catch (error) {
+      console.error('Error deleting comment:', error);
+      alert('Failed to delete comment');
     }
   };
 
@@ -87,14 +125,72 @@ export function CommentsSection({ postId }: CommentsSectionProps) {
       ) : null}
 
       <div className="space-y-4">
-        {comments.map((comment) => (
-          <div key={comment.id} className="bg-[#1a1a1a] rounded-xl p-4 border border-[#2a2a2a]">
-            <p className="text-gray-300 whitespace-pre-wrap">{comment.content}</p>
-            <div className="mt-2 text-sm text-gray-500">
-              <span className="text-gray-400">{comment.authorName || `User ${comment.userId}`}</span> • {formatDate(comment.createdAt)}
+        {comments.map((comment) => {
+          const isAuthor = username && comment.authorName && username.toLowerCase() === comment.authorName.toLowerCase();
+          const isEditing = editingCommentId === comment.id;
+
+          return (
+            <div key={comment.id} className="bg-[#1a1a1a] rounded-xl p-4 border border-[#2a2a2a] relative">
+              {/* Edit and Delete icons */}
+              {isAuthor && !isEditing && (
+                <div className="absolute top-4 right-4 flex gap-2">
+                  {/* Edit icon */}
+                  <button
+                    onClick={() => handleEditClick(comment)}
+                    className="text-blue-400/60 hover:text-blue-400 transition-colors"
+                    title="Edit comment"
+                  >
+                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+                    </svg>
+                  </button>
+                  {/* Delete icon */}
+                  <button
+                    onClick={() => handleDelete(comment.id)}
+                    className="text-red-400/60 hover:text-red-400 transition-colors"
+                    title="Delete comment"
+                  >
+                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                    </svg>
+                  </button>
+                </div>
+              )}
+
+              {isEditing ? (
+                <div className="pr-20">
+                  <textarea
+                    value={editContent}
+                    onChange={(e) => setEditContent(e.target.value)}
+                    className="w-full px-4 py-3 bg-[#0f0f0f] border border-[#3a3a3a] rounded-xl text-gray-200 placeholder-gray-500 focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500 transition-colors resize-y"
+                    rows={3}
+                  />
+                  <div className="flex gap-2 mt-3">
+                    <button
+                      onClick={() => handleSaveEdit(comment.id)}
+                      className="bg-blue-600 hover:bg-blue-500 text-white px-4 py-1.5 rounded-lg text-sm font-medium transition-all duration-200"
+                    >
+                      Save Changes
+                    </button>
+                    <button
+                      onClick={handleCancelEdit}
+                      className="bg-[#262626] hover:bg-[#333333] text-gray-300 px-4 py-1.5 rounded-lg text-sm font-medium transition-all duration-200"
+                    >
+                      Cancel
+                    </button>
+                  </div>
+                </div>
+              ) : (
+                <>
+                  <p className="text-gray-300 whitespace-pre-wrap pr-20">{comment.content}</p>
+                  <div className="mt-2 text-sm text-gray-500">
+                    <span className="text-gray-400">{comment.authorName || `User ${comment.userId}`}</span> • {formatDate(comment.createdAt)}
+                  </div>
+                </>
+              )}
             </div>
-          </div>
-        ))}
+          );
+        })}
         
         {comments.length === 0 && (
           <p className="text-gray-500 text-center py-8">No comments yet. Be the first to comment!</p>
