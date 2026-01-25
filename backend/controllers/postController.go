@@ -3,9 +3,9 @@ package controllers
 import (
 	"errors"
 	"net/http"
-	"strings"
 
 	"github.com/V1T0bh/rednus/backend/initializers"
+	"github.com/V1T0bh/rednus/backend/middleware"
 	"github.com/V1T0bh/rednus/backend/models"
 	"github.com/gin-gonic/gin"
 
@@ -20,26 +20,18 @@ func parseStringToUint(s string) uint {
 	return uint(i)
 }
 
-// getUserFromHeader extracts username from X-Username header and returns the user
-func getUserFromHeader(c *gin.Context) (*models.User, error) {
-	username := c.GetHeader("X-Username")
-	if username == "" {
-		return nil, errors.New("X-Username header is required")
+// getUserFromContext gets the authenticated user from JWT context
+func getUserFromContext(c *gin.Context) (*models.User, error) {
+	user, exists := middleware.GetUserFromContext(c)
+	if !exists {
+		return nil, errors.New("user not authenticated")
 	}
-
-	username = strings.ToLower(username)
-	var user models.User
-	result := initializers.DB.Where("name = ?", username).First(&user)
-	if result.Error != nil {
-		return nil, errors.New("user not found")
-	}
-
-	return &user, nil
+	return user, nil
 }
 
 func PostsCreate(c *gin.Context) {
 	// Get user from header
-	user, err := getUserFromHeader(c)
+	user, err := getUserFromContext(c)
 	if err != nil {
 		c.JSON(http.StatusUnauthorized, gin.H{
 			"success": false,
@@ -85,7 +77,7 @@ func PostsCreate(c *gin.Context) {
 
 func PostsCreateinTopic(c *gin.Context) {
 	// Get user from header
-	user, err := getUserFromHeader(c)
+	user, err := getUserFromContext(c)
 	if err != nil {
 		c.JSON(http.StatusUnauthorized, gin.H{
 			"success": false,
@@ -170,7 +162,7 @@ func PostsIndex(c *gin.Context) {
 
 func PostsUpdate(c *gin.Context) {
 	// Get user from header
-	user, err := getUserFromHeader(c)
+	user, err := getUserFromContext(c)
 	if err != nil {
 		c.JSON(http.StatusUnauthorized, gin.H{
 			"success": false,
@@ -213,7 +205,7 @@ func PostsUpdate(c *gin.Context) {
 
 func PostsDelete(c *gin.Context) {
 	// Get user from header
-	user, err := getUserFromHeader(c)
+	user, err := getUserFromContext(c)
 	if err != nil {
 		c.JSON(http.StatusUnauthorized, gin.H{
 			"success": false,

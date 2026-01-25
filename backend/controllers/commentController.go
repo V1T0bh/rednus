@@ -4,33 +4,25 @@ import (
 	"errors"
 	"net/http"
 	"strconv"
-	"strings"
 
 	"github.com/V1T0bh/rednus/backend/initializers"
+	"github.com/V1T0bh/rednus/backend/middleware"
 	"github.com/V1T0bh/rednus/backend/models"
 	"github.com/gin-gonic/gin"
 )
 
-// getUserFromHeaderComment extracts username from X-Username header and returns the user
-func getUserFromHeaderComment(c *gin.Context) (*models.User, error) {
-	username := c.GetHeader("X-Username")
-	if username == "" {
-		return nil, errors.New("X-Username header is required")
+// getUserFromContextComment gets the authenticated user from JWT context
+func getUserFromContextComment(c *gin.Context) (*models.User, error) {
+	user, exists := middleware.GetUserFromContext(c)
+	if !exists {
+		return nil, errors.New("user not authenticated")
 	}
-
-	username = strings.ToLower(username)
-	var user models.User
-	result := initializers.DB.Where("name = ?", username).First(&user)
-	if result.Error != nil {
-		return nil, errors.New("user not found")
-	}
-
-	return &user, nil
+	return user, nil
 }
 
 func CommentsCreate(c *gin.Context) {
 	// Get user from header
-	user, err := getUserFromHeaderComment(c)
+	user, err := getUserFromContextComment(c)
 	if err != nil {
 		c.JSON(http.StatusUnauthorized, gin.H{
 			"success": false,
@@ -85,7 +77,7 @@ func CommentsAllInPost(c *gin.Context) {
 
 func CommentsUpdate(c *gin.Context) {
 	// Get user from header
-	user, err := getUserFromHeaderComment(c)
+	user, err := getUserFromContextComment(c)
 	if err != nil {
 		c.JSON(http.StatusUnauthorized, gin.H{
 			"success": false,
@@ -135,7 +127,7 @@ func CommentsUpdate(c *gin.Context) {
 
 func CommentsDelete(c *gin.Context) {
 	// Get user from header
-	user, err := getUserFromHeaderComment(c)
+	user, err := getUserFromContextComment(c)
 	if err != nil {
 		c.JSON(http.StatusUnauthorized, gin.H{
 			"success": false,
