@@ -113,8 +113,8 @@ func CommentsUpdate(c *gin.Context) {
 		return
 	}
 
-	// Check if user is the author
-	if comment.UserID != user.ID {
+	// Check if user is the author or an admin
+	if comment.UserID != user.ID && !user.Admin {
 		c.JSON(http.StatusForbidden, gin.H{
 			"success": false,
 			"message": "You can only edit your own comments",
@@ -157,8 +157,8 @@ func CommentsDelete(c *gin.Context) {
 		return
 	}
 
-	// Check if user is the author
-	if comment.UserID != user.ID {
+	// Check if user is the author or an admin
+	if comment.UserID != user.ID && !user.Admin {
 		c.JSON(http.StatusForbidden, gin.H{
 			"success": false,
 			"message": "You can only delete your own comments",

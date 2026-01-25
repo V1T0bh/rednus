@@ -10,11 +10,12 @@ interface EditPostButtonProps {
 }
 
 export function EditPostButton({ postId, topicId, authorName }: EditPostButtonProps) {
-  const { username } = useAuth();
+  const { username, isAdmin } = useAuth();
   const router = useRouter();
 
-  // Only show if user is the author
-  if (!username || !authorName || username.toLowerCase() !== authorName.toLowerCase()) {
+  // Only show if user is the author or an admin
+  const isAuthor = username && authorName && username.toLowerCase() === authorName.toLowerCase();
+  if (!isAuthor && !isAdmin) {
     return null;
   }
 

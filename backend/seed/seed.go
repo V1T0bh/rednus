@@ -32,6 +32,7 @@ func main() {
 		{Name: "alice", Admin: false},
 		{Name: "bob", Admin: false},
 		{Name: "charlie", Admin: true},
+		{Name: "admin123123", Admin: true},
 	}
 
 	for i := range users {

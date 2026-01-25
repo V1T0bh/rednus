@@ -17,7 +17,7 @@ export function CommentsSection({ postId }: CommentsSectionProps) {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [editingCommentId, setEditingCommentId] = useState<string | null>(null);
   const [editContent, setEditContent] = useState('');
-  const { isAuthenticated, username, isLoading: authLoading } = useAuth();
+  const { isAuthenticated, username, isAdmin, isLoading: authLoading } = useAuth();
 
   useEffect(() => {
     loadComments();
@@ -127,12 +127,13 @@ export function CommentsSection({ postId }: CommentsSectionProps) {
       <div className="space-y-4">
         {comments.map((comment) => {
           const isAuthor = username && comment.authorName && username.toLowerCase() === comment.authorName.toLowerCase();
+          const canModify = isAuthor || isAdmin;
           const isEditing = editingCommentId === comment.id;
 
           return (
             <div key={comment.id} className="bg-[#1a1a1a] rounded-xl p-4 border border-[#2a2a2a] relative">
               {/* Edit and Delete icons */}
-              {isAuthor && !isEditing && (
+              {canModify && !isEditing && (
                 <div className="absolute top-4 right-4 flex gap-2">
                   {/* Edit icon */}
                   <button

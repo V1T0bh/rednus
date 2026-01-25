@@ -12,12 +12,13 @@ interface DeletePostButtonProps {
 }
 
 export function DeletePostButton({ postId, topicId, authorName }: DeletePostButtonProps) {
-  const { username } = useAuth();
+  const { username, isAdmin } = useAuth();
   const router = useRouter();
   const [isDeleting, setIsDeleting] = useState(false);
 
-  // Only show if user is the author
-  if (!username || !authorName || username.toLowerCase() !== authorName.toLowerCase()) {
+  // Only show if user is the author or an admin
+  const isAuthor = username && authorName && username.toLowerCase() === authorName.toLowerCase();
+  if (!isAuthor && !isAdmin) {
     return null;
   }
 

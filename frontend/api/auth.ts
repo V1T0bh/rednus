@@ -25,14 +25,15 @@ export async function signIn(username: string, rememberMe: boolean): Promise<Use
   // Backend returns capitalized field names (Go struct fields)
   const user = response.user;
   const userName = user.Name || user.name; // Support both cases
+  const isAdmin = user.Admin || false;
   
   // Store user in localStorage with TTL based on rememberMe
-  setUser(userName, rememberMe);
+  setUser(userName, rememberMe, isAdmin);
   
   return {
     id: user.ID,
     name: userName,
-    admin: user.Admin || false,
+    admin: isAdmin,
     createdAt: user.CreatedAt || '',
     updatedAt: user.UpdatedAt || '',
   };

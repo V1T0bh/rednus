@@ -3,10 +3,12 @@
 import { useState, useEffect } from "react";
 import Link from "next/link";
 import { getTopics, Topic } from "@/api/topics";
+import { useAuth } from "@/lib/auth";
 
 export function SideNavbar() {
   const [isOpen, setIsOpen] = useState(false);
   const [topics, setTopics] = useState<Topic[]>([]);
+  const { isAdmin } = useAuth();
 
   useEffect(() => {
     async function fetchTopics() {
@@ -83,6 +85,20 @@ export function SideNavbar() {
             </svg>
             {isOpen && <span className="font-medium whitespace-nowrap">Profile</span>}
           </Link>
+
+          {/* Admin Developer Link - Only visible to admins */}
+          {isAdmin && (
+            <Link
+              href="/admin"
+              className="flex items-center gap-3 px-4 py-3 rounded-lg text-yellow-400 hover:bg-[#262626] hover:text-yellow-300 transition-colors"
+              title="Developer"
+            >
+              <svg className="w-5 h-5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4" />
+              </svg>
+              {isOpen && <span className="font-medium whitespace-nowrap">Developer</span>}
+            </Link>
+          )}
         </div>
 
         {/* Divider */}

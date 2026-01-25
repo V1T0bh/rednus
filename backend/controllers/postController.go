@@ -192,8 +192,8 @@ func PostsUpdate(c *gin.Context) {
 	var post models.Post
 	initializers.DB.First(&post, postID)
 
-	// Check if user is the author
-	if post.UserID != user.ID {
+	// Check if user is the author or an admin
+	if post.UserID != user.ID && !user.Admin {
 		c.JSON(http.StatusForbidden, gin.H{
 			"success": false,
 			"message": "You can only edit your own posts",
@@ -227,8 +227,8 @@ func PostsDelete(c *gin.Context) {
 	var post models.Post
 	initializers.DB.First(&post, postID)
 
-	// Check if user is the author
-	if post.UserID != user.ID {
+	// Check if user is the author or an admin
+	if post.UserID != user.ID && !user.Admin {
 		c.JSON(http.StatusForbidden, gin.H{
 			"success": false,
 			"message": "You can only delete your own posts",

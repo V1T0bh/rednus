@@ -8,6 +8,7 @@ const SESSION_TTL = 30 * 60 * 1000;
 export interface AuthUser {
   username: string;
   expiresAt: number | null; // null means "remember me" (no expiry)
+  isAdmin: boolean;
 }
 
 const AUTH_STORAGE_KEY = 'rednus_auth_user';
@@ -46,12 +47,13 @@ export function isAuthenticated(): boolean {
 }
 
 // Set user in localStorage
-export function setUser(username: string, rememberMe: boolean): void {
+export function setUser(username: string, rememberMe: boolean, isAdmin: boolean = false): void {
   if (typeof window === 'undefined') return;
   
   const user: AuthUser = {
     username: username.toLowerCase(),
     expiresAt: rememberMe ? null : Date.now() + SESSION_TTL,
+    isAdmin,
   };
   
   localStorage.setItem(AUTH_STORAGE_KEY, JSON.stringify(user));
@@ -108,6 +110,7 @@ export function useAuth() {
   return {
     user,
     username: user?.username || null,
+    isAdmin: user?.isAdmin || false,
     isAuthenticated: user !== null,
     isLoading,
     login,
