@@ -41,7 +41,7 @@ export function DeletePostButton({ postId, topicId, authorName }: DeletePostButt
     <button
       onClick={handleDelete}
       disabled={isDeleting}
-      className="bg-red-600 text-white px-4 py-2 rounded-lg font-medium hover:bg-red-700 focus:ring-4 focus:outline-none focus:ring-red-300 disabled:opacity-50 disabled:cursor-not-allowed text-sm"
+      className="bg-red-600 hover:bg-red-500 text-white px-4 py-2 rounded-lg font-medium transition-all duration-200 shadow-lg shadow-red-500/25 hover:shadow-red-500/40 disabled:opacity-50 disabled:cursor-not-allowed text-sm"
     >
       {isDeleting ? 'Deleting...' : 'Delete Post'}
     </button>

@@ -25,7 +25,7 @@ export function EditPostButton({ postId, topicId, authorName }: EditPostButtonPr
   return (
     <button
       onClick={handleEdit}
-      className="bg-blue-600 text-white px-4 py-2 rounded-lg font-medium hover:bg-blue-700 focus:ring-4 focus:outline-none focus:ring-blue-300 text-sm"
+      className="bg-blue-600 hover:bg-blue-500 text-white px-4 py-2 rounded-lg font-medium transition-all duration-200 shadow-lg shadow-blue-500/25 hover:shadow-blue-500/40 text-sm"
     >
       Edit Post
     </button>

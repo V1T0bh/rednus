@@ -17,7 +17,7 @@ export function CreatePostButton({ topicId }: CreatePostButtonProps) {
 
   return (
     <Link href={`/topic/${topicId}/create-post`}>
-      <button className="bg-orange-400 text-white px-6 py-3 rounded-lg font-medium hover:bg-orange-500 focus:ring-4 focus:outline-none focus:ring-orange-300 text-lg">
+      <button className="bg-emerald-600 hover:bg-emerald-500 text-white px-5 py-2.5 rounded-xl font-medium transition-all duration-200 shadow-lg shadow-emerald-500/25 hover:shadow-emerald-500/40 text-sm">
         + Create Post
       </button>
     </Link>
