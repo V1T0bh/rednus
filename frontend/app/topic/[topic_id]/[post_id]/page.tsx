@@ -1,34 +1,48 @@
 import { Divider } from "@/components/divider";
 import { Title } from "@/components/title";
+import { getPost } from "@/api/posts";
+import { CommentsSection } from "@/components/comments-section";
+import Link from "next/link";
+import { formatDate } from "@/lib/date-utils";
+import { DeletePostButton } from "@/components/post/delete-post-button";
+import { EditPostButton } from "@/components/post/edit-post-button";
 
-const posts = [
-    { id: 1, title: "Post 1", 
-      description: "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum."
-      , datePosted: "2024-01-01"},
-    { id: 2, title: "Post 2", description: "This is my second post.", datePosted: "2024-01-02"},
-    { id: 3, title: "Post 3", description: "This is my third post.", datePosted: "2024-01-03"},
-]
+export const dynamic = 'force-dynamic';
 
-const post = posts[0];
-
-export default async function PostPage({ params }: { params: { topic_id: string, post_id: string } }) {
+export default async function PostPage({ params }: { params: Promise<{ topic_id: string, post_id: string }> }) {
   const { topic_id, post_id } = await params;
 
+  const post = await getPost(post_id);
+
   return (
-    <div className="flex flex-col justify-center mt-10 px-100">
-        <div className="flex flex-row justify-between items-baseline">
-          <Title>Post {post_id}, Topic {topic_id}</Title>
-          <h2>{post.datePosted}</h2>
+    <div className="flex flex-col max-w-4xl mx-auto px-6 py-12">
+        <div className="flex flex-row justify-center items-center gap-4">
+          <Link href={`/topic/${topic_id}`} className="text-red-500 hover:text-red-400 mr-auto transition-colors">
+            ← Back to Topic
+          </Link>
+          <EditPostButton postId={post_id} topicId={topic_id} authorName={post.authorName} />
+          <DeletePostButton postId={post_id} topicId={topic_id} authorName={post.authorName} />
         </div>
+
+        <div className="flex flex-row justify-between items-baseline">
+          <Title>{post.title}</Title>
+          
+        </div>
+        <div className="flex flex-row justify-between items-center mb-4">
+          {post.authorName && (
+              <p className="text-sm text-gray-400">Posted by <span className="font-medium text-gray-300">{post.authorName}</span></p>
+            )}
+            <h2 className="text-sm text-gray-500">{formatDate(post.createdAt)}</h2>
+            
+          </div>
 
         <Divider className="mb-8"/>
 
-        <p>{post.description}</p>
+        <div className="bg-[#1a1a1a] rounded-xl border border-[#2a2a2a] p-8">
+          <p className="text-lg text-gray-300 whitespace-pre-wrap leading-relaxed">{post.content}</p>
+        </div>
 
-        <Divider className="my-8"/>
-        <textarea placeholder="Add comments..." className="border-0 rounded-lg text-md p-4 w-full resize-y" rows={1}/>
-        <Divider className="my-8"/>
-
+        <CommentsSection postId={post_id} />
     </div>
   );
 }

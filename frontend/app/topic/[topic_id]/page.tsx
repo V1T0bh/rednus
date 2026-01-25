@@ -1,3 +1,4 @@
+import { getPostsByTopic } from "@/api/posts";
 import { Title } from "@/components/title";
 import {
   Card,
@@ -9,45 +10,50 @@ import {
   CardTitle,
 } from "@/components/ui/card"
 import Link from "next/link";
+import { CreatePostButton } from "@/components/topic/create-post-button";
+import { getTopic } from "@/api";
+import { formatDateShort } from "@/lib/date-utils";
 
-const posts = [
-    { id: 1, title: "Post 1", 
-      description: "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum."
-      , datePosted: "2024-01-01"},
-    { id: 2, title: "Post 2", description: "This is my second post.", datePosted: "2024-01-02"},
-    { id: 3, title: "Post 3", description: "This is my third post.", datePosted: "2024-01-03"},
-]
+export const dynamic = 'force-dynamic';
 
-export default async function TopicPage({ params }: { params: { topic_id: string } }) {
+export default async function TopicPage({ params }: { params: Promise<{ topic_id: string }> }) {
   const { topic_id } = await params;
 
+  const topic = await getTopic(topic_id);
+
+  const posts = await getPostsByTopic(topic_id);
+
   // reorder posts by datePosted descending
-  posts.sort((a, b) => (a.datePosted < b.datePosted ? 1 : -1));
+  //posts.sort((a, b) => (a.createdAt < b.createdAt ? 1 : -1));
 
   return (
-    <div className="flex flex-col justify-center mt-10 px-50">
-        <Title>{`Topic ${topic_id}`}</Title>
+    <div className="flex flex-col justify-center mt-10 px-4 md:px-8 lg:px-16 max-w-6xl mx-auto">
+        <div className="flex flex-row justify-between items-baseline">
+          <Title>{topic.name}</Title>
+          <CreatePostButton topicId={topic_id} />
+        </div>
 
-        <hr className="h-px my-8 bg-gray-800 border-0"></hr>
+        <hr className="h-px my-6 bg-[#2a2a2a] border-0"></hr>
 
         
         <div className="flex flex-col gap-4 justify-center mb-10">
-          {
+          {posts.length === 0 ? (
+            <p className="text-gray-400 text-center py-8">No posts yet. Be the first to create one!</p>
+          ) : (
             posts.map((post) => (
               <Link key={post.id} href={`/topic/${topic_id}/${post.id}`}>
-                <Card className="cursor-pointer hover:bg-gray-200 w-full h-35 md:h-45">
+                <Card className="cursor-pointer bg-[#1a1a1a] border-[#2a2a2a] hover:bg-[#222222] hover:border-[#3a3a3a] transition-all duration-200 w-full">
                   <CardHeader>
-                    <CardTitle>{post.title}</CardTitle>
-                    <CardAction>{post.datePosted}</CardAction>
+                    <CardTitle className="text-gray-100">{post.title}</CardTitle>
+                    <CardAction className="text-gray-500 text-sm">{formatDateShort(post.createdAt)}</CardAction>
                   </CardHeader>
                   <CardContent>
-                    <p className="line-clamp-2 md:line-clamp-3">{post.description}</p>
+                    <p className="line-clamp-2 md:line-clamp-3 text-gray-400">{post.content}</p>
                   </CardContent>
                 </Card>
               </Link>
-            )
-          )
-          }
+            ))
+          )}
           
         </div>
     </div>

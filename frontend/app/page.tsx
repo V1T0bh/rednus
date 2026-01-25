@@ -1,16 +1,23 @@
-import React from "react";
-import { redirect } from "next/navigation";
-import Link from "next/link";
+'use client';
+
+import { useAuth } from "@/lib/auth";
 import { UnauthedHome } from "../components/home/unauthed_home";
 import { AuthedHome } from "../components/home/authed_home";
 
-// Placeholder for user authentication status
-const isAuthenticated = true;
-
 export default function Home() {
+  const { isAuthenticated, username, isLoading } = useAuth();
+
+  if (isLoading) {
+    return (
+      <div className="min-h-full flex items-center justify-center">
+        <p className="text-xl text-gray-400">Loading...</p>
+      </div>
+    );
+  }
+
   return (
-    <div>
-      {isAuthenticated ? <AuthedHome/> : <UnauthedHome/>}
+    <div className="min-h-full">
+      {isAuthenticated ? <AuthedHome username={username!} /> : <UnauthedHome />}
     </div>
   );
 }
