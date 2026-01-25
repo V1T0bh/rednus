@@ -8,11 +8,21 @@ import (
 
 	"github.com/V1T0bh/rednus/backend/initializers"
 	"github.com/V1T0bh/rednus/backend/models"
+	"golang.org/x/crypto/bcrypt"
 )
 
 func init() {
 	initializers.LoadEnv()
 	initializers.ConnectToDB()
+}
+
+// HashPassword hashes a password using bcrypt
+func HashPassword(password string) string {
+	bytes, err := bcrypt.GenerateFromPassword([]byte(password), bcrypt.DefaultCost)
+	if err != nil {
+		log.Fatal("Error hashing password:", err)
+	}
+	return string(bytes)
 }
 
 func main() {
@@ -26,13 +36,16 @@ func main() {
 	initializers.DB.Exec("DELETE FROM users")
 	fmt.Println("✓ All tables cleared")
 
+	// Hash the default password
+	defaultPassword := HashPassword("password")
+
 	// Create users
 	fmt.Println("\nCreating users...")
 	users := []models.User{
-		{Name: "alice", Admin: false},
-		{Name: "bob", Admin: false},
-		{Name: "charlie", Admin: true},
-		{Name: "admin123123", Admin: true},
+		{Name: "alice", Password: defaultPassword, Admin: false},
+		{Name: "bob", Password: defaultPassword, Admin: false},
+		{Name: "charlie", Password: defaultPassword, Admin: true},
+		{Name: "admin123123", Password: defaultPassword, Admin: true},
 	}
 
 	for i := range users {
