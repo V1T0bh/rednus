@@ -1,4 +1,4 @@
-import { getUsername } from '@/lib/auth';
+import { getToken } from '@/lib/auth';
 
 // API Configuration
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8080';
@@ -17,12 +17,12 @@ export async function apiRequest<T>(
 ): Promise<T> {
   const url = `${apiConfig.baseURL}${endpoint}`;
   
-  // Get username from auth storage and add to headers (client-side only)
+  // Get JWT token from auth storage and add to headers (client-side only)
   const authHeaders: Record<string, string> = {};
   if (typeof window !== 'undefined') {
-    const username = getUsername();
-    if (username) {
-      authHeaders['X-Username'] = username;
+    const token = getToken();
+    if (token) {
+      authHeaders['Authorization'] = `Bearer ${token}`;
     }
   }
   

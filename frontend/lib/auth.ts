@@ -7,6 +7,7 @@ const SESSION_TTL = 30 * 60 * 1000;
 
 export interface AuthUser {
   username: string;
+  token: string;
   expiresAt: number | null; // null means "remember me" (no expiry)
   isAdmin: boolean;
 }
@@ -41,17 +42,24 @@ export function getUsername(): string | null {
   return user?.username || null;
 }
 
+// Get the JWT token
+export function getToken(): string | null {
+  const user = getUser();
+  return user?.token || null;
+}
+
 // Check if user is authenticated
 export function isAuthenticated(): boolean {
   return getUser() !== null;
 }
 
 // Set user in localStorage
-export function setUser(username: string, rememberMe: boolean, isAdmin: boolean = false): void {
+export function setUser(username: string, token: string, rememberMe: boolean, isAdmin: boolean = false): void {
   if (typeof window === 'undefined') return;
   
   const user: AuthUser = {
     username: username.toLowerCase(),
+    token,
     expiresAt: rememberMe ? null : Date.now() + SESSION_TTL,
     isAdmin,
   };
@@ -97,8 +105,8 @@ export function useAuth() {
     };
   }, []);
 
-  const login = useCallback((username: string, rememberMe: boolean) => {
-    setUser(username, rememberMe);
+  const login = useCallback((username: string, token: string, rememberMe: boolean, isAdmin: boolean = false) => {
+    setUser(username, token, rememberMe, isAdmin);
     setUserState(getUser());
   }, []);
 
@@ -110,6 +118,7 @@ export function useAuth() {
   return {
     user,
     username: user?.username || null,
+    token: user?.token || null,
     isAdmin: user?.isAdmin || false,
     isAuthenticated: user !== null,
     isLoading,
