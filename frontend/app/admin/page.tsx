@@ -40,7 +40,7 @@ const commentsPresets: PresetEndpoint[] = [
 ];
 
 export default function AdminPage() {
-  const { isAdmin, isLoading, isAuthenticated, username } = useAuth();
+  const { isAdmin, isLoading, isAuthenticated, token } = useAuth();
   const router = useRouter();
 
   const [selectedCategory, setSelectedCategory] = useState<'topics' | 'posts' | 'comments' | 'custom'>('topics');
@@ -103,7 +103,7 @@ export default function AdminPage() {
         method,
         headers: {
           'Content-Type': 'application/json',
-          'X-Username': username || '',
+          'Authorization': token ? `Bearer ${token}` : '',
         },
       };
 
