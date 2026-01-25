@@ -39,6 +39,7 @@ func SetupRoutes() {
 	// Comments routes
 	router.POST("/posts/:post_id/comments", controllers.CommentsCreate)
 	router.GET("/posts/:post_id/comments", controllers.CommentsAllInPost)
+	router.PUT("/comments/:id", controllers.CommentsUpdate)
 	router.DELETE("/comments/:id", controllers.CommentsDelete)
 
 	// User routes

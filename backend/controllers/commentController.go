@@ -83,6 +83,56 @@ func CommentsAllInPost(c *gin.Context) {
 	})
 }
 
+func CommentsUpdate(c *gin.Context) {
+	// Get user from header
+	user, err := getUserFromHeaderComment(c)
+	if err != nil {
+		c.JSON(http.StatusUnauthorized, gin.H{
+			"success": false,
+			"message": err.Error(),
+		})
+		return
+	}
+
+	id := c.Param("id")
+
+	var body struct {
+		Content string
+	}
+
+	c.Bind(&body)
+
+	var comment models.Comment
+	result := initializers.DB.First(&comment, id)
+
+	if result.Error != nil {
+		c.JSON(http.StatusNotFound, gin.H{
+			"success": false,
+			"message": "Comment not found",
+		})
+		return
+	}
+
+	// Check if user is the author
+	if comment.UserID != user.ID {
+		c.JSON(http.StatusForbidden, gin.H{
+			"success": false,
+			"message": "You can only edit your own comments",
+		})
+		return
+	}
+
+	// Update the comment
+	initializers.DB.Model(&comment).Updates(models.Comment{
+		Content: body.Content,
+	})
+
+	c.JSON(200, gin.H{
+		"message": "Comment-Updated",
+		"comment": comment,
+	})
+}
+
 func CommentsDelete(c *gin.Context) {
 	// Get user from header
 	user, err := getUserFromHeaderComment(c)
@@ -97,7 +147,15 @@ func CommentsDelete(c *gin.Context) {
 	id := c.Param("id")
 
 	var comment models.Comment
-	initializers.DB.First(&comment, id)
+	result := initializers.DB.First(&comment, id)
+
+	if result.Error != nil {
+		c.JSON(http.StatusNotFound, gin.H{
+			"success": false,
+			"message": "Comment not found",
+		})
+		return
+	}
 
 	// Check if user is the author
 	if comment.UserID != user.ID {
