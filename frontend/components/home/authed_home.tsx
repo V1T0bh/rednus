@@ -1,18 +1,21 @@
 import Link from "next/link";
 import { Title } from "../title";
 
-const User = "user123"; // Placeholder for user authentication status
 const Topics = [
-    { id: 1, label: "Topic 1" , link : "/topics/1" },
-    { id: 2, label: "Topic 2" , link : "/topics/2" },
-    { id: 3, label: "Topic 3", link : "/topics/3" },
+    { id: 1, label: "Topic 1" , link : "/topic/1" },
+    { id: 2, label: "Topic 2" , link : "/topic/2" },
+    { id: 3, label: "Topic 3", link : "/topic/3" },
 ]; // Placeholder for user topics
 
-export const AuthedHome = () => {
+interface AuthedHomeProps {
+    username: string;
+}
+
+export const AuthedHome = ({ username }: AuthedHomeProps) => {
     return (
     <div className="flex flex-col fill-screen items-center justify-center bg-zinc-50">
       <Title>
-        Welcome, {User}!
+        Welcome, {username}!
       </Title>
       <div className="flex flex-col justify-center">
       <h2 className="text-3xl font-bold text-zinc-800 my-5">
