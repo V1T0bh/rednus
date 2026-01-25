@@ -6,8 +6,18 @@ import Link from "next/link";
 import { formatDate } from "@/lib/date-utils";
 import { DeletePostButton } from "@/components/post/delete-post-button";
 import { EditPostButton } from "@/components/post/edit-post-button";
+import type { Metadata } from "next";
 
 export const dynamic = 'force-dynamic';
+
+export async function generateMetadata({ params }: { params: Promise<{ topic_id: string, post_id: string }> }): Promise<Metadata> {
+  const { post_id } = await params;
+  const post = await getPost(post_id);
+  
+  return {
+    title: post.title,
+  };
+}
 
 export default async function PostPage({ params }: { params: Promise<{ topic_id: string, post_id: string }> }) {
   const { topic_id, post_id } = await params;

@@ -57,6 +57,10 @@ export default function AdminPage() {
   const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8080';
 
   useEffect(() => {
+    document.title = "Developer | RedNUS";
+  }, []);
+
+  useEffect(() => {
     if (!isLoading && (!isAuthenticated || !isAdmin)) {
       router.push('/');
     }

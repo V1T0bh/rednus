@@ -15,6 +15,10 @@ export default function CreatePostPage({ params }: { params: Promise<{ topic_id:
   const router = useRouter();
   const { isAuthenticated, isLoading } = useAuth();
 
+  useEffect(() => {
+    document.title = "Create Post | RedNUS";
+  }, []);
+
   // Redirect to sign-in if not authenticated
   useEffect(() => {
     if (!isLoading && !isAuthenticated) {

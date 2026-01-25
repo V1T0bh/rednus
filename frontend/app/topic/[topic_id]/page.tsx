@@ -13,8 +13,18 @@ import Link from "next/link";
 import { CreatePostButton } from "@/components/topic/create-post-button";
 import { getTopic } from "@/api";
 import { formatDateShort } from "@/lib/date-utils";
+import type { Metadata } from "next";
 
 export const dynamic = 'force-dynamic';
+
+export async function generateMetadata({ params }: { params: Promise<{ topic_id: string }> }): Promise<Metadata> {
+  const { topic_id } = await params;
+  const topic = await getTopic(topic_id);
+  
+  return {
+    title: topic.name,
+  };
+}
 
 export default async function TopicPage({ params }: { params: Promise<{ topic_id: string }> }) {
   const { topic_id } = await params;

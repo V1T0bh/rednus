@@ -1,7 +1,11 @@
-
 import Link from "next/link"
 import { Title } from "@/components/title"
 import { getTopics } from "@/api"
+import type { Metadata } from "next";
+
+export const metadata: Metadata = {
+  title: "Topics",
+};
 
 export const dynamic = 'force-dynamic';
 

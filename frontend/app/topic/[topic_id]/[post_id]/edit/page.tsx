@@ -17,6 +17,10 @@ export default function EditPostPage({ params }: { params: Promise<{ topic_id: s
   const { isAuthenticated, username, isLoading: authLoading } = useAuth();
 
   useEffect(() => {
+    document.title = "Edit Post | RedNUS";
+  }, []);
+
+  useEffect(() => {
     const loadPost = async () => {
       try {
         const post = await getPost(post_id);

@@ -20,6 +20,10 @@ export default function ProfilePage() {
   const [isChangingPassword, setIsChangingPassword] = useState(false);
 
   useEffect(() => {
+    document.title = "Profile | RedNUS";
+  }, []);
+
+  useEffect(() => {
     if (!isLoading && !isAuthenticated) {
       router.push('/sign-in');
     }

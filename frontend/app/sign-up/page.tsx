@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { Subtitle } from "@/components/subtitle";
@@ -14,6 +14,10 @@ export default function SignUp() {
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [error, setError] = useState('');
     const router = useRouter();
+
+    useEffect(() => {
+        document.title = "Sign Up | RedNUS";
+    }, []);
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
