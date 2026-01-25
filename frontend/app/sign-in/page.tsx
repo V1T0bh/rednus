@@ -33,7 +33,7 @@ export default function SignIn() {
     };
 
     return (
-    <div className="flex flex-col min-h-screen items-center justify-center">
+    <div className="flex flex-col fill-screen items-center justify-center pt-10">
       <Subtitle>
         Sign In
       </Subtitle>
