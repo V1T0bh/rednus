@@ -49,9 +49,29 @@ func TopicsAll(c *gin.Context) {
 	})
 }
 
+func TopicsIndex(c *gin.Context) {
+	// Get single topic by ID
+	id := c.Param("topic_id")
+
+	var topic models.Topic
+	result := initializers.DB.First(&topic, id)
+
+	if result.Error != nil {
+		c.JSON(http.StatusNotFound, gin.H{
+			"success": false,
+			"message": "Topic not found",
+		})
+		return
+	}
+
+	c.JSON(200, gin.H{
+		"topic": topic,
+	})
+}
+
 func TopicsUpdate(c *gin.Context) {
 	// get data off req body
-	id := c.Param("id")
+	id := c.Param("topic_id")
 	var body struct {
 		Label string
 	}
@@ -75,7 +95,7 @@ func TopicsUpdate(c *gin.Context) {
 
 func TopicsDelete(c *gin.Context) {
 	// get topic from id
-	id := c.Param("id")
+	id := c.Param("topic_id")
 
 	// delete topic in db
 	initializers.DB.Delete(&models.Topic{}, id)

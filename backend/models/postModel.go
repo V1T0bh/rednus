@@ -8,4 +8,5 @@ type Post struct {
 	TopicID     uint
 	Title       string
 	Description string
+	AuthorName  string
 }

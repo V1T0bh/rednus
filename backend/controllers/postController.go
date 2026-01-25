@@ -3,6 +3,7 @@ package controllers
 import (
 	"errors"
 	"net/http"
+	"strings"
 
 	"github.com/V1T0bh/rednus/backend/initializers"
 	"github.com/V1T0bh/rednus/backend/models"
@@ -19,7 +20,34 @@ func parseStringToUint(s string) uint {
 	return uint(i)
 }
 
+// getUserFromHeader extracts username from X-Username header and returns the user
+func getUserFromHeader(c *gin.Context) (*models.User, error) {
+	username := c.GetHeader("X-Username")
+	if username == "" {
+		return nil, errors.New("X-Username header is required")
+	}
+
+	username = strings.ToLower(username)
+	var user models.User
+	result := initializers.DB.Where("name = ?", username).First(&user)
+	if result.Error != nil {
+		return nil, errors.New("user not found")
+	}
+
+	return &user, nil
+}
+
 func PostsCreate(c *gin.Context) {
+	// Get user from header
+	user, err := getUserFromHeader(c)
+	if err != nil {
+		c.JSON(http.StatusUnauthorized, gin.H{
+			"success": false,
+			"message": err.Error(),
+		})
+		return
+	}
+
 	// get data off req body
 	var body struct {
 		Title       string
@@ -28,9 +56,14 @@ func PostsCreate(c *gin.Context) {
 
 	c.Bind(&body)
 
-	// Create a post
-	// CHANGE USERID AND TOPICID when implemented
-	post := models.Post{Title: body.Title, Description: body.Description, UserID: 1, TopicID: 1}
+	// Create a post with authenticated user
+	post := models.Post{
+		Title:       body.Title,
+		Description: body.Description,
+		UserID:      user.ID,
+		TopicID:     1,
+		AuthorName:  user.Name,
+	}
 
 	result := initializers.DB.Create(&post)
 
@@ -51,6 +84,16 @@ func PostsCreate(c *gin.Context) {
 }
 
 func PostsCreateinTopic(c *gin.Context) {
+	// Get user from header
+	user, err := getUserFromHeader(c)
+	if err != nil {
+		c.JSON(http.StatusUnauthorized, gin.H{
+			"success": false,
+			"message": err.Error(),
+		})
+		return
+	}
+
 	// same thing as PostsCreate but get topic ID
 	topicID := c.Param("topic_id")
 
@@ -62,8 +105,14 @@ func PostsCreateinTopic(c *gin.Context) {
 
 	c.Bind(&body)
 
-	// Create a post
-	post := models.Post{Title: body.Title, Description: body.Description, UserID: 1, TopicID: uint(parseStringToUint(topicID))}
+	// Create a post with authenticated user
+	post := models.Post{
+		Title:       body.Title,
+		Description: body.Description,
+		UserID:      user.ID,
+		TopicID:     uint(parseStringToUint(topicID)),
+		AuthorName:  user.Name,
+	}
 
 	result := initializers.DB.Create(&post)
 
@@ -109,10 +158,10 @@ func PostsAllinTopic(c *gin.Context) {
 }
 
 func PostsIndex(c *gin.Context) {
-	id := c.Param("id")
+	postID := c.Param("post_id")
 
 	var post models.Post
-	initializers.DB.First(&post, id)
+	initializers.DB.First(&post, postID)
 
 	c.JSON(200, gin.H{
 		"post": post,
@@ -120,8 +169,18 @@ func PostsIndex(c *gin.Context) {
 }
 
 func PostsUpdate(c *gin.Context) {
+	// Get user from header
+	user, err := getUserFromHeader(c)
+	if err != nil {
+		c.JSON(http.StatusUnauthorized, gin.H{
+			"success": false,
+			"message": err.Error(),
+		})
+		return
+	}
+
 	// read, update, save
-	id := c.Param("id")
+	postID := c.Param("post_id")
 
 	var body struct {
 		Title       string
@@ -131,7 +190,16 @@ func PostsUpdate(c *gin.Context) {
 	c.Bind(&body)
 
 	var post models.Post
-	initializers.DB.First(&post, id)
+	initializers.DB.First(&post, postID)
+
+	// Check if user is the author
+	if post.UserID != user.ID {
+		c.JSON(http.StatusForbidden, gin.H{
+			"success": false,
+			"message": "You can only edit your own posts",
+		})
+		return
+	}
 
 	initializers.DB.Model(&post).Updates(models.Post{
 		Title:       body.Title,
@@ -144,9 +212,31 @@ func PostsUpdate(c *gin.Context) {
 }
 
 func PostsDelete(c *gin.Context) {
-	id := c.Param("id")
+	// Get user from header
+	user, err := getUserFromHeader(c)
+	if err != nil {
+		c.JSON(http.StatusUnauthorized, gin.H{
+			"success": false,
+			"message": err.Error(),
+		})
+		return
+	}
 
-	initializers.DB.Delete(&models.Post{}, id)
+	postID := c.Param("post_id")
+
+	var post models.Post
+	initializers.DB.First(&post, postID)
+
+	// Check if user is the author
+	if post.UserID != user.ID {
+		c.JSON(http.StatusForbidden, gin.H{
+			"success": false,
+			"message": "You can only delete your own posts",
+		})
+		return
+	}
+
+	initializers.DB.Delete(&models.Post{}, postID)
 
 	c.JSON(200, gin.H{
 		"message": "Post-Deleted",

@@ -12,13 +12,13 @@ var DB *gorm.DB
 
 func ConnectToDB() {
 	var err error
-	// postgresql: //postgres:[YOUR-PASSWORD]@db.gtkesmpfmlaucvddzcnq.supabase.co:5432/postgres
-	// DATABASE_URL="postgresql://postgres.gtkesmpfmlaucvddzcnq:[YOUR-PASSWORD]@aws-1-ap-south-1.pooler.supabase.com:6543/postgres"
-	// postgresql://postgres:[YOUR-PASSWORD]@db.gtkesmpfmlaucvddzcnq.supabase.co:5432/postgres
 	dsn := os.Getenv("DB_URL")
-	DB, err = gorm.Open(postgres.Open(dsn), &gorm.Config{
-		PrepareStmt: false,
-	})
+
+	// Add prefer_simple_protocol=true to disable prepared statements
+	DB, err = gorm.Open(postgres.New(postgres.Config{
+		DSN:                  dsn,
+		PreferSimpleProtocol: true, // disables implicit prepared statement usage
+	}), &gorm.Config{})
 
 	if err != nil {
 		log.Fatal("Error connecting to database")
